@@ -13,8 +13,3 @@ app.use(express.json());
 
 app.use('/', allRoutes);
 
-sequelize.sync({ force: false }).then(function() {
-    app.listen(PORT, function() {
-    console.log(`App listening on http://localhost${PORT}`);
-    });
-});

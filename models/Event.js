@@ -1,5 +1,3 @@
-// const { Model, DataTypes } = require('sequelize');
-// const sequelize = require('../config/connection');
 
 // id:Interger
 // eventName:String
