@@ -1,10 +1,8 @@
+'use strict';
 const mongoose = require('mongoose'),
   bcrypt = require('bcrypt'),
   Schema = mongoose.Schema;
 
-/**
- * User Schema
- */
 const UserSchema = new Schema({
   username: {
     type: String,
