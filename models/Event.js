@@ -10,4 +10,4 @@ const sequelize = require('../config/connection');
 // endTime: Date
 // recurring metting (stretch goal)
 
-module.exports = User
+module.exports = Event
