@@ -1,4 +1,7 @@
+const bcrypt = require('bcrypt');
 const { User } = require('../models');
+const jwt = require('jsonwebtoken');
+require('dotenv').config()
 
 module.exports = {
     getUsers(req, res) {
@@ -9,7 +12,11 @@ module.exports = {
             .catch((err) => res.status(500).json(err))
     },
     postUser(req, res) {
-        User.create(req.body)
+        User.create({
+            username:req.body.username,
+            email:req.body.email,
+            password:bcrypt.hashSync(req.body.password, 4)
+        })
             .then((userData) => res.json(userData))
             .catch((err) => res.status(500).json(err))
     },
@@ -50,5 +57,40 @@ module.exports = {
             .catch((err) => {
               console.log(err);
               res.status(500).json(err);
-          })        }
+          })        
+    },
+    // JWT
+    findOne(req, res) {
+        User.findOne({
+            // where: {
+                email:req.body.email
+            // }
+        }).then(foundUser => {
+            console.log(req.body.password)
+            console.log(foundUser)
+            if (!foundUser) {
+                return res.status(401).json({msg:"invalid login email!"})
+                // change back to credential
+            }
+            else if(!bcrypt.compareSync(req.body.password,foundUser.password)){
+                return res.status(401).json({msg:"invalid login password!"})
+                // change back to credential
+            } 
+            else {
+                const token = jwt.sign({
+                   id:foundUser.id,
+                   email:foundUser.email
+                },process.env.JWT_SECRET,{
+                    expiresIn:'2h'
+                })
+                return res.json({
+                    token:token,
+                    user:foundUser
+                })
+            }    
+        }).catch(err=>{
+            res.status(500).json({msg:"an error occurred",err})
+            console.log(err)
+        })
+    }
   }
