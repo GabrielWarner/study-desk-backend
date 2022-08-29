@@ -6,8 +6,6 @@ require('dotenv').config()
 module.exports = {
     getUsers(req, res) {
         User.find()
-            //return to use as an array obj
-            // (users) -> is the result of user.find()
             .then((users) => res.json(users))
             .catch((err) => res.status(500).json(err))
     },
@@ -60,21 +58,18 @@ module.exports = {
           })        
     },
     // JWT
+    // login route
     findOne(req, res) {
         User.findOne({
-            // where: {
                 email:req.body.email
-            // }
         }).then(foundUser => {
             console.log(req.body.password)
             console.log(foundUser)
             if (!foundUser) {
-                return res.status(401).json({msg:"invalid login email!"})
-                // change back to credential
+                return res.status(401).json({msg:"invalid login credential!"})
             }
             else if(!bcrypt.compareSync(req.body.password,foundUser.password)){
-                return res.status(401).json({msg:"invalid login password!"})
-                // change back to credential
+                return res.status(401).json({msg:"invalid login credential!"})
             } 
             else {
                 const token = jwt.sign({
@@ -92,5 +87,10 @@ module.exports = {
             res.status(500).json({msg:"an error occurred",err})
             console.log(err)
         })
+    },
+    // protect route
+    protected(req, res) {
+        const token = req.headers.authorization.split(' '[1])
+        res.json(token)
     }
   }

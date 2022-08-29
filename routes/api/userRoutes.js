@@ -5,16 +5,19 @@ const {
     getOneUser,
     updateUser,
     removeUser,
-    findOne
+    findOne,
+    protected
 } = require('../../controllers/userController');
 
 router.route('/').get(getUsers).post(postUser)
 
-router.route('/:userId').get(getOneUser).put(updateUser).delete(removeUser)
-
 // JWT
 router.route('/login').post(findOne)
+router.route('/protected').get(protected)
 
-// router.route('/protected').get()
+// CRUD
+router.route('/:userId').get(getOneUser).put(updateUser).delete(removeUser)
+
+
 
 module.exports = router;
