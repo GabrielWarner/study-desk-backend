@@ -1,50 +1,54 @@
-'use strict';
-const mongoose = require('mongoose'),
-  jwt = require('jsonwebtoken'),
-  bcrypt = require('bcrypt'),
-  User = mongoose.model('User');
+const { User } = require('../models');
 
-exports.register = function(req, res) {
-  const newUser = new User(req.body);
-  newUser.hash_password = bcrypt.hashSync(req.body.password, 10);
-  newUser.save(function(err, user) {
-    if (err) {
-      return res.status(400).send({
-        message: err
-      });
-    } else {
-      user.hash_password = undefined;
-      return res.json(user);
-    }
-  });
-};
-
-exports.sign_in = function(req, res) {
-  User.findOne({
-    email: req.body.email
-  }, function(err, user) {
-    if (err) throw err;
-    if (!user || !user.comparePassword(req.body.password)) {
-      return res.status(401).json({ message: 'Authentication failed. Invalid user or password.' });
-    }
-    return res.json({ token: jwt.sign({ email: user.email, username: user.username, _id: user._id }, 'RESTFULAPIs') });
-  });
-};
-
-exports.loginRequired = function(req, res, next) {
-  if (req.user) {
-    next();
-  } else {
-
-    return res.status(401).json({ message: 'Unauthorized user!!' });
+module.exports = {
+    getUsers(req, res) {
+        User.find()
+            //return to use as an array obj
+            // (users) -> is the result of user.find()
+            .then((users) => res.json(users))
+            .catch((err) => res.status(500).json(err))
+    },
+    postUser(req, res) {
+        User.create(req.body)
+            .then((userData) => res.json(userData))
+            .catch((err) => res.status(500).json(err))
+    },
+    getOneUser(req, res) {
+        User.findOne({ _id: req.params.userId })
+            .then((user) => {
+                if (!user) {
+                    return res.status(404).json({ message: "invalid ID" })
+                }
+                res.json(user)
+            })
+            .catch((err) => res.status(500).json(err))
+    },
+    updateUser(req, res) {
+        User.findOneAndUpdate(
+            { _id: req.params.userId },
+            { $set: req.body },
+            {
+                runValidators: true,
+                new: true
+            })
+            .then((updateUser) => {
+                if (!updateUser) {
+                    return res.status(404).json({ message: "invalid ID" })
+                }
+                res.json(updateUser)
+            })
+            .catch((err) => res.status(500).json(err))
+    },
+    removeUser(req, res) {
+        User.findByIdAndDelete({ _id: req.params.userId })
+            .then((removeUser) => {
+                if (!removeUser) {
+                    return res.status(404).json({ message: "invalid ID" })
+                }
+            })
+            .then(() => res.json({message:'user removed'}))
+            .catch((err) => {
+              console.log(err);
+              res.status(500).json(err);
+          })        }
   }
-};
-exports.profile = function(req, res, next) {
-  if (req.user) {
-    res.send(req.user);
-    next();
-  } 
-  else {
-   return res.status(401).json({ message: 'Invalid token' });
-  }
-};

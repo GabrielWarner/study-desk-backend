@@ -1,31 +1,36 @@
-'use strict';
-const mongoose = require('mongoose'),
-  bcrypt = require('bcrypt'),
-  Schema = mongoose.Schema;
+const { Schema, model } = require('mongoose');
 
-const UserSchema = new Schema({
-  username: {
-    type: String,
-    trim: true,
-    required: true
+// Use schema to create User model
+const userSchema = new Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      max_length: 50,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      match: [/^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/, 'Please enter a valid email address']
+    },
+    password: {
+      type: String,
+      required: true,
+      unique: true,
+      max_length: 50
+    },
   },
-  email: {
-    type: String,
-    unique: true,
-    trim: true,
-    required: true
-  },
-  hash_password: {
-    type: String
-  },
-  created: {
-    type: Date,
-    default: Date.now
+  {
+    toJSON: {
+      virtuals: true,
+    },
+    id: false,
   }
-});
+);
 
-UserSchema.methods.comparePassword = function(password) {
-  return bcrypt.compareSync(password, this.hash_password);
-};
+const User = model('user', userSchema);
 
-mongoose.model('User', UserSchema);
+module.exports = User;
