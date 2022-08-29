@@ -89,8 +89,13 @@ module.exports = {
         })
     },
     // protect route
-    protected(req, res) {
-        const token = req.headers.authorization.split(' '[1])
-        res.json(token)
+    checkToken(req, res) {
+        const token = req.headers.authorization.split(" ")[1]
+        try{
+            const userData = jwt.verify(token,process.env.JWT_SECRET)
+            res.json(userData)
+        } catch{
+          res.status(403).json({msg:"invalid token"})
+        }
     }
   }
