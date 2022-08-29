@@ -1,2 +1,0 @@
-DROP DATABASE IF EXISTS desk_db;
-CREATE DATABASE desk_db;

@@ -1,29 +1,36 @@
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../config/connection');
-const bcrypt = require("bcrypt")
+const { Schema, model } = require('mongoose');
 
-class User extends Model {}
-
-User.init({
-    email: {
-         type: DataTypes.STRING,
-         unique:true 
+// Use schema to create User model
+const userSchema = new Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      max_length: 50,
     },
-    password:{
-        type:DataTypes.STRING,
-        validate:{
-            len:[8]
-        }
-    }
-},
-{
-    sequelize,
-    hooks:{
-        beforeCreate:function(newUser){
-            newUser.password = bcrypt.hashSync(newUser.password,4);
-            return newUser
-        }
-    }
-});
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      match: [/^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/, 'Please enter a valid email address']
+    },
+    password: {
+      type: String,
+      required: true,
+      min_length: 8,
+      max_length: 50
+    },
+  },
+  {
+    toJSON: {
+      virtuals: true,
+    },
+    id: false,
+  }
+);
 
-module.exports = User
+const User = model('user', userSchema);
+
+module.exports = User;
