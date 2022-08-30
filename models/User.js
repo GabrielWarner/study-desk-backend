@@ -28,8 +28,9 @@ const userSchema = new Schema(
       virtuals: true,
     },
     id: false,
-  }
+  },
 );
+
 
 const User = model('user', userSchema);
 

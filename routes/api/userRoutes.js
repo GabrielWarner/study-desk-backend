@@ -1,20 +1,25 @@
 const router = require('express').Router();
 const {
     getUsers,
-    postUser,
     getOneUser,
     updateUser,
     removeUser,
-    findOne
+    findOne,
+    checkToken,
+    create
 } = require('../../controllers/userController');
 
-router.route('/').get(getUsers).post(postUser)
-
-router.route('/:userId').get(getOneUser).put(updateUser).delete(removeUser)
 
 // JWT
+router.route('/signup').post(create)
 router.route('/login').post(findOne)
+router.route('/check-token').get(checkToken)
 
-// router.route('/protected').get()
+
+// CRUD
+router.route('/').get(getUsers)
+router.route('/:userId').get(getOneUser).put(updateUser).delete(removeUser)
+
+
 
 module.exports = router;

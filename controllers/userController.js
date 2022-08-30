@@ -6,18 +6,7 @@ require('dotenv').config()
 module.exports = {
     getUsers(req, res) {
         User.find()
-            //return to use as an array obj
-            // (users) -> is the result of user.find()
             .then((users) => res.json(users))
-            .catch((err) => res.status(500).json(err))
-    },
-    postUser(req, res) {
-        User.create({
-            username:req.body.username,
-            email:req.body.email,
-            password:bcrypt.hashSync(req.body.password, 4)
-        })
-            .then((userData) => res.json(userData))
             .catch((err) => res.status(500).json(err))
     },
     getOneUser(req, res) {
@@ -60,21 +49,39 @@ module.exports = {
           })        
     },
     // JWT
+    //signup route
+    create(req, res) {
+        User.create({
+            username:req.body.username,
+            email:req.body.email,
+            password:bcrypt.hashSync(req.body.password, 4)
+        })
+        .then(newUser=>{
+            const token = jwt.sign({
+                id:newUser.id,
+                email:newUser.email
+             },process.env.JWT_SECRET,{
+                 expiresIn:"2h"
+             })
+             return res.json({
+                 token:token,
+                 user:newUser
+             })
+        }).catch(err=>{
+            res.status(500).json({msg:"an error occurred",err})
+        })
+    },
+
+    // login route
     findOne(req, res) {
         User.findOne({
-            // where: {
                 email:req.body.email
-            // }
         }).then(foundUser => {
-            console.log(req.body.password)
-            console.log(foundUser)
             if (!foundUser) {
-                return res.status(401).json({msg:"invalid login email!"})
-                // change back to credential
+                return res.status(401).json({msg:"invalid login credential!"})
             }
             else if(!bcrypt.compareSync(req.body.password,foundUser.password)){
-                return res.status(401).json({msg:"invalid login password!"})
-                // change back to credential
+                return res.status(401).json({msg:"invalid login credential!"})
             } 
             else {
                 const token = jwt.sign({
@@ -92,5 +99,18 @@ module.exports = {
             res.status(500).json({msg:"an error occurred",err})
             console.log(err)
         })
+    },
+    
+    // check token route
+    // see if a token is valid
+    // get user date
+    checkToken(req, res) {
+        const token = req.headers.authorization.split(" ")[1]
+        try{
+            const userData = jwt.verify(token,process.env.JWT_SECRET)
+            res.json(userData)
+        } catch{
+          res.status(403).json({msg:"invalid token"})
+        }
     }
   }
