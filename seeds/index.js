@@ -6,18 +6,18 @@ connection.on('error', (err) => err);
 connection.once('open', async () => {
     console.log('Connected')
 
-    await User.insertMany([
-        {
-            username: "abc",
-            email: "abc@abc.com",
-            password: "password"
-        },
-        {
-            username: "xyz",
-            email: "xyz@xyz.com",
-            password: "password1"
-        }
-    ])
+    // await User.insertMany([
+    //     {
+    //         username: "abc",
+    //         email: "abc@abc.com",
+    //         password: "password"
+    //     },
+    //     {
+    //         username: "xyz",
+    //         email: "xyz@xyz.com",
+    //         password: "password1"
+    //     }
+    // ])
 
     await Event.insertMany([
         {
