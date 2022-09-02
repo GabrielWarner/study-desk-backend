@@ -1,4 +1,4 @@
-const { Event } = require('../models')
+const { Event, User } = require('../models')
 
 module.exports = {
     getAllEvents(req, res) {
