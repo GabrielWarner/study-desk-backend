@@ -31,7 +31,7 @@ const userSchema = new Schema(
     notes: [
       {
       type:Schema.Types.ObjectId,
-      ref: "Note"
+      ref: "note"
       }
     ],
   },
