@@ -11,8 +11,7 @@ module.exports = {
         .catch((err) => res.status(500).json(err))
     },
     addNote(req, res) {
-        //TODO: Get ID to be between 12 byes or a string of 24 hex characters or an integer
-        const newId = new mongoose.Types.ObjectId()
+
         Note.create({
             // id: uuidv4(),
             text:req.body.text,
@@ -26,12 +25,20 @@ module.exports = {
         })
         .catch((err) => res.status(500).json(err))
     },
+
     deleteNote(req,res){
-        Note.findByIdAndDelete({_id: req.params.id}, (err) => {
-            if (err) {
-                req.flash("error",err);
-                return res.redirect("")
+        Note.findOneAndDelete({ _id: req.params.noteId })
+        .then( (note) => {
+            if (!note) {
+                return res.status(404).json({ message: "No note found with this ID!" });
             }
-        })
+            // GetAllNotes().then(setNotes())
+
+            })
+        .then(()=> res.json({message: "Note deleted!"}))
+        .catch((err)=>{
+            console.log(err);
+            res.status(500).json(err)
+        });
     }
 }

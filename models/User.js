@@ -22,6 +22,12 @@ const userSchema = new Schema(
       min_length: 8,
       max_length: 50
     },
+    notes: [
+      {
+      type:Schema.Types.ObjectId,
+      ref: "Note"
+      }
+    ],
   },
   {
     toJSON: {
