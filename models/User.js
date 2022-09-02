@@ -28,6 +28,12 @@ const userSchema = new Schema(
           ref: 'event',
       },
     ],
+    notes: [
+      {
+      type:Schema.Types.ObjectId,
+      ref: "note"
+      }
+    ],
   },
   {
     toJSON: {
