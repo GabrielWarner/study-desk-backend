@@ -4,7 +4,6 @@ const noteSchema = new Schema(
     {
         id: {
             type: Number,
-            required: true,
         },
         text:{
             type: String,
