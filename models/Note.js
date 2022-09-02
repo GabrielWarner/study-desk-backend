@@ -2,9 +2,9 @@ const { Schema, model } = require('mongoose');
 
 const noteSchema = new Schema(
     {
-        id: {
-            type: Number,
-        },
+        // id: {
+        //     type: Number,
+        // },
         text:{
             type: String,
             required: true,

@@ -1,7 +1,8 @@
 const router = require('express').Router();
 const {
     getAllNotes,
-    addNote
+    addNote,
+    DeleteNote
 } = require('../../controllers/noteController')
 
 

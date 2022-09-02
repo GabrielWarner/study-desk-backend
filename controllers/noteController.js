@@ -25,5 +25,13 @@ module.exports = {
             res.json(addNote)
         })
         .catch((err) => res.status(500).json(err))
+    },
+    deleteNote(req,res){
+        Note.findByIdAndDelete({_id: req.params.id}, (err) => {
+            if (err) {
+                req.flash("error",err);
+                return res.redirect("")
+            }
+        })
     }
 }
