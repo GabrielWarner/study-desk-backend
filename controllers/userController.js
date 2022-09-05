@@ -13,6 +13,7 @@ module.exports = {
     },
     getOneUser(req, res) {
         User.findOne({ _id: req.params.userId })
+            .populate({ path: "notes", select: "-__v"})
             .then((user) => {
                 if (!user) {
                     return res.status(404).json({ message: "invalid ID" })

@@ -1,9 +1,13 @@
 const { Schema, model } = require('mongoose');
-
+const dateFormat = require("../utils/dateFormat");
 const noteSchema = new Schema(
     {
         // id: {
         //     type: Number,
+        // },
+        // noteId: {
+        //     type: Schema.Types.ObjectId,
+        //     default: () => new Types.ObjectId(),
         // },
         text:{
             type: String,
@@ -11,11 +15,14 @@ const noteSchema = new Schema(
         },
         date:{
             type: Date,
-            required: true,
+            default: Date.now,
+            get: (timestamp) => dateFormat(timestamp)
         },
         userid:
         {
-             type: Schema.Types.ObjectId, ref: 'User',
+            //  type: Schema.Types.ObjectId, ref: 'user',
+            type: String,
+            required: true,
         }
     },
     {
