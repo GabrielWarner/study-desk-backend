@@ -7,8 +7,8 @@ const {
 } = require('../../controllers/eventController')
 
 
-router.route('/').get(getAllEvents).post(addEvent)
+router.route('/:userId').get(getAllEvents).post(addEvent)
 
-router.route('/:eventId').get(getOneEvent).delete(removeEvent)
+router.route('/:userId/:eventId').get(getOneEvent).delete(removeEvent)
 
 module.exports = router;

@@ -62,7 +62,6 @@ module.exports = {
             email:req.body.email,
             password:bcrypt.hashSync(req.body.password, 4)
         })
-        .populate({ path: "events", select: "-__v" })
         .then(newUser=>{
             const token = jwt.sign({
                 id:newUser.id,
