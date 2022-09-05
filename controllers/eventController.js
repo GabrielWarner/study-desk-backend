@@ -28,16 +28,16 @@ module.exports = {
             if(!addEvent) {
                 return res.status(404).json({message:"invaild input"})
             }
-            // return User.findByIdAndUpdate(
-            //     {
-            //         _id: req.param.userId
-            //     },
-            //     { 
-            //         $addToSet: {events: events._id} 
-            //     },
-            //     { new: true }
-            // )
-            res.json(addEvent)
+            return User.findByIdAndUpdate(
+                {
+                    _id: req.body.userId
+                },
+                { 
+                    $addToSet: {events: events._id} 
+                },
+                { new: true }
+            )
+            // res.json(addEvent)
         })
         .catch((err) => res.status(500).json(err))
     },
