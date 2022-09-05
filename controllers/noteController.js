@@ -48,14 +48,14 @@ module.exports = {
             userid:req.body.userid,
         })
           .then((note) => {
-            // User.findOneAndUpdate({_id: req.body._id}, { notes: [note._id] })
-            // .then(()=>{
-            //   res.json(note) 
-            // }).
-            // catch((error) => {
-            //   console.log(error);
-            //   return res.status(500).json({msg:" unable to add note to user", error})
-            // })
+            User.findOneAndUpdate({_id: req.body._id}, { notes: [note._id] })
+            .then(()=>{
+              res.json(note) 
+            }).
+            catch((error) => {
+              console.log(error);
+              return res.status(500).json({msg:" unable to add note to user", error})
+            })
           })
         
           .catch((err) => {
