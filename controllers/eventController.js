@@ -19,27 +19,30 @@ module.exports = {
             .catch((err) => res.status(500).json(err))
     },
     addEvent(req, res) {
-        Event.create({
-            title:req.body.title,
-            start:req.body.start,
-            end:req.body.end
-        })
-        .then((addEvent)=>{
-            if(!addEvent) {
+        Event.create(req.body)
+        .then((event)=>{
+            if(!event) {
                 return res.status(404).json({message:"invaild input"})
             }
             return User.findByIdAndUpdate(
                 {
-                    _id: req.body.userId
+                    _id: req.params.userId
                 },
                 { 
-                    $addToSet: {events: events._id} 
+                    $addToSet: {events: event._id} 
                 },
                 { new: true }
-            )
-            // res.json(addEvent)
+            );
         })
-        .catch((err) => res.status(500).json(err))
+        .then((user) => !user
+        ? res.status(404).json({
+            message: 'Event created, but found no user with that ID',
+          })
+        : res.json('Created the event 🎉'))
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json(err);
+        });
     },
     removeEvent(req, res) {
         Event.findByIdAndDelete({ _id: req.params.eventId })

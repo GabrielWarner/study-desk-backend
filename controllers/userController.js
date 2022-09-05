@@ -13,6 +13,7 @@ module.exports = {
     },
     getOneUser(req, res) {
         User.findOne({ _id: req.params.userId })
+            .populate({ path: "events", select: "-__v" })
             .populate({ path: "notes", select: "-__v"})
             .then((user) => {
                 if (!user) {
@@ -30,6 +31,7 @@ module.exports = {
                 runValidators: true,
                 new: true
             })
+            .populate({ path: "events", select: "-__v" })
             .then((updateUser) => {
                 if (!updateUser) {
                     return res.status(404).json({ message: "invalid ID" })
@@ -40,6 +42,7 @@ module.exports = {
     },
     removeUser(req, res) {
         User.findByIdAndDelete({ _id: req.params.userId })
+        .populate({ path: "events", select: "-__v" })
             .then((removeUser) => {
                 if (!removeUser) {
                     return res.status(404).json({ message: "invalid ID" })
@@ -59,6 +62,7 @@ module.exports = {
             email:req.body.email,
             password:bcrypt.hashSync(req.body.password, 4)
         })
+        .populate({ path: "events", select: "-__v" })
         .then(newUser=>{
             const token = jwt.sign({
                 id:newUser.id,
@@ -79,7 +83,9 @@ module.exports = {
     findOne(req, res) {
         User.findOne({
                 email:req.body.email
-        }).then(foundUser => {
+        })
+        .populate({ path: "events", select: "-__v" })
+        .then(foundUser => {
             if (!foundUser) {
                 return res.status(401).json({msg:"invalid login credential!"})
             }
