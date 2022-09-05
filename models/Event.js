@@ -29,4 +29,4 @@ const eventSchema = new Schema(
 
 const Event = model('event', eventSchema);
 
-module.exports = Event
+module.exports = Event;
