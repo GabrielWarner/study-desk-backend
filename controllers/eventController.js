@@ -40,5 +40,18 @@ module.exports = {
             res.json(addEvent)
         })
         .catch((err) => res.status(500).json(err))
-    }
+    },
+    removeEvent(req, res) {
+        Event.findByIdAndDelete({ _id: req.params.eventId })
+            .then((removeEvent) => {
+                if (!removeEvent) {
+                    return res.status(404).json({ message: "invalid ID" })
+                }
+            })
+            .then(() => res.json({message:'event removed'}))
+            .catch((err) => {
+              console.log(err);
+              res.status(500).json(err);
+          })        
+    },
 }
