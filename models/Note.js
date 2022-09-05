@@ -12,6 +12,10 @@ const noteSchema = new Schema(
         date:{
             type: Date,
             required: true,
+        },
+        userid:
+        {
+             type: Schema.Types.ObjectId, ref: 'User',
         }
     },
     {
@@ -24,4 +28,4 @@ const noteSchema = new Schema(
 
 const Note = model('note', noteSchema);
 
-module.exports = Note
+module.exports = Note;

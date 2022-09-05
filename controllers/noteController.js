@@ -1,29 +1,38 @@
 const mongoose = require("mongoose");
 const {v4: uuidv4} = require("uuid");
-const { Note } = require('../models')
+const { Note, User } = require('../models')
 
 
 
 module.exports = {
     getAllNotes(req, res) {
-        Note.find({})
+        const userid = req.query.userid;
+        Note.find({ userid  })
         .then((allNotes)=>res.json(allNotes))
         .catch((err) => res.status(500).json(err))
     },
     addNote(req, res) {
 
-        Note.create({
+        const note = new Note({
             // id: uuidv4(),
             text:req.body.text,
-            date:req.body.date
+            date:req.body.date,
+            userid:req.body.userid,
         })
-        .then((addNote)=>{
-            if(!addNote) {
+
+        note.save((error, result) => {
+            console.log(result._id)
+            if(!result) {
+                
                 return res.status(404).json({message:"invaild input"})
+                
             }
-            res.json(addNote)
+
+            // TODO: Update the user model with the note id
+            User.findOneAndUpdate({_id: req.body.userid}, { notes: [result._id] })
+            res.json(result)
         })
-        .catch((err) => res.status(500).json(err))
+       
     },
 
     deleteNote(req,res){
