@@ -1,10 +1,22 @@
-const { Event, User } = require('../models')
+const { ObjectId } = require('mongoose').Types;
+const { Event, User } = require('../models');
+const { events } = require('../models/User');
 
 module.exports = {
     getAllEvents(req, res) {
         Event.find({})
         .then((allEvents)=>res.json(allEvents))
         .catch((err) => res.status(500).json(err))
+    },
+    getOneEvent(req, res) {
+        Event.findOne({ _id: req.params.eventId })
+            .then((event) => {
+                if (!event) {
+                    return res.status(404).json({ message: "invalid ID" })
+                }
+                res.json(event)
+            })
+            .catch((err) => res.status(500).json(err))
     },
     addEvent(req, res) {
         Event.create({
@@ -16,6 +28,15 @@ module.exports = {
             if(!addEvent) {
                 return res.status(404).json({message:"invaild input"})
             }
+            // return User.findByIdAndUpdate(
+            //     {
+            //         _id: req.param.userId
+            //     },
+            //     { 
+            //         $addToSet: {events: events._id} 
+            //     },
+            //     { new: true }
+            // )
             res.json(addEvent)
         })
         .catch((err) => res.status(500).json(err))
