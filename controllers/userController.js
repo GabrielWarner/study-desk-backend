@@ -6,11 +6,14 @@ require('dotenv').config()
 module.exports = {
     getUsers(req, res) {
         User.find()
+            .populate({ path: "events", select: "-__v" })
+            .populate({ path: "notes", select: "-__v"})
             .then((users) => res.json(users))
             .catch((err) => res.status(500).json(err))
     },
     getOneUser(req, res) {
         User.findOne({ _id: req.params.userId })
+            .populate({ path: "notes", select: "-__v"})
             .then((user) => {
                 if (!user) {
                     return res.status(404).json({ message: "invalid ID" })
@@ -92,6 +95,7 @@ module.exports = {
                 })
                 return res.json({
                     token:token,
+                    id:foundUser.id,
                     user:foundUser
                 })
             }    
