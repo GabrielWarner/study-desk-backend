@@ -6,7 +6,7 @@ const { Note, User } = require('../models')
 
 module.exports = {
     getAllNotes(req, res) {
-        const userId = req.body.userId;
+        const userId = req.params.userid;
         Note.find({ userId  })
         .then((allNotes)=>res.json(allNotes))
         .catch((err) => res.status(500).json(err))
@@ -49,7 +49,7 @@ module.exports = {
             userId:req.body.userId,
         })
           .then((note) => {
-            User.findOneAndUpdate({_id: req.body.userId}, {  $addToSet: {notes: note._id} }, {new: true })
+            User.findByIdAndUpdate({_id: req.body.userId}, {  $addToSet: {notes: note._id} }, {new: true })
             .then(()=>{
               res.json(note) 
             }).
