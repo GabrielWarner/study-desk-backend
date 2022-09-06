@@ -8,7 +8,7 @@ const {
 } = require('../../controllers/noteController')
 
 
-router.route('/').get(getAllNotes).post(createNote)
+router.route('/:userid').get(getAllNotes).post(createNote)
 
 router.route("/:noteId").delete(deleteNote);
 

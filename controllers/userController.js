@@ -6,15 +6,13 @@ require('dotenv').config()
 module.exports = {
     getUsers(req, res) {
         User.find()
-            .populate({ path: "events", select: "-__v" })
-            .populate({ path: "notes", select: "-__v"})
+            .populate(["notes", "events"])
             .then((users) => res.json(users))
             .catch((err) => res.status(500).json(err))
     },
     getOneUser(req, res) {
         User.findOne({ _id: req.params.userId })
-            .populate({ path: "events", select: "-__v" })
-            .populate({ path: "notes", select: "-__v"})
+            .populate(["notes", "events"])
             .then((user) => {
                 if (!user) {
                     return res.status(404).json({ message: "invalid ID" })
@@ -31,7 +29,7 @@ module.exports = {
                 runValidators: true,
                 new: true
             })
-            .populate({ path: "events", select: "-__v" })
+            .populate(["notes", "events"])
             .then((updateUser) => {
                 if (!updateUser) {
                     return res.status(404).json({ message: "invalid ID" })
@@ -42,7 +40,7 @@ module.exports = {
     },
     removeUser(req, res) {
         User.findByIdAndDelete({ _id: req.params.userId })
-        .populate({ path: "events", select: "-__v" })
+        .populate(["notes", "events"])
             .then((removeUser) => {
                 if (!removeUser) {
                     return res.status(404).json({ message: "invalid ID" })
@@ -83,7 +81,7 @@ module.exports = {
         User.findOne({
                 email:req.body.email
         })
-        .populate({ path: "events", select: "-__v" })
+        .populate(["notes", "events"])
         .then(foundUser => {
             if (!foundUser) {
                 return res.status(401).json({msg:"invalid login credential!"})
