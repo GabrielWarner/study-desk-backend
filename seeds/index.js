@@ -19,23 +19,23 @@ connection.once('open', async () => {
     //     }
     // ])
 
-    await Event.insertMany([
-        {
-            title: "Project",
-            start: new Date(),
-            end: new Date("2022, 9, 5"),
-        },
-        {
-            title: "Metting",
-            start: new Date(),
-            end: new Date(),
-        },
-        {
-            title: "Class",
-            start: new Date("2022, 8, 28"),
-            end: new Date("2022, 8, 31"),
-        },
-    ]);
+    // await Event.insertMany([
+    //     {
+    //         title: "Project",
+    //         start: new Date(),
+    //         end: new Date("2022, 9, 5"),
+    //     },
+    //     {
+    //         title: "Metting",
+    //         start: new Date(),
+    //         end: new Date(),
+    //     },
+    //     {
+    //         title: "Class",
+    //         start: new Date("2022, 8, 28"),
+    //         end: new Date("2022, 8, 31"),
+    //     },
+    // ]);
     console.info('Seeding complete! 🌱');
     process.exit(0);
 })
