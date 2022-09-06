@@ -26,7 +26,7 @@ module.exports = {
             }
             return User.findByIdAndUpdate(
                 {
-                    _id: req.params.userId
+                    _id: req.body.userId
                 },
                 { 
                     $addToSet: {events: event._id} 
