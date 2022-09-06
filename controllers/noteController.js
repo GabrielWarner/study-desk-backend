@@ -6,8 +6,8 @@ const { Note, User } = require('../models')
 
 module.exports = {
     getAllNotes(req, res) {
-        const userid = req.query.userid;
-        Note.find({ userid  })
+        const userId = req.body.userId;
+        Note.find({ userId  })
         .then((allNotes)=>res.json(allNotes))
         .catch((err) => res.status(500).json(err))
     },
@@ -17,6 +17,7 @@ module.exports = {
     //       .then((notes) => res.json(notes))
     //       .catch((err) => res.status(500).json(err));
     //   },
+
     // addNote(req, res) {
 
     //     const note = new Note({
@@ -45,10 +46,10 @@ module.exports = {
         Note.create({
             text:req.body.text,
             date:req.body.date,
-            userid:req.body.userid,
+            userId:req.body.userId,
         })
           .then((note) => {
-            User.findOneAndUpdate({_id: req.body._id}, { notes: [note._id] })
+            User.findOneAndUpdate({_id: req.body.userId}, {  $addToSet: {notes: note._id} }, {new: true })
             .then(()=>{
               res.json(note) 
             }).
@@ -62,7 +63,40 @@ module.exports = {
             console.log(err);
             return res.status(500).json(err);
           });
-      },    
+      },
+    
+    //   createNote(req, res) {
+    //     Note.create({
+            
+    //         text:req.body.text,
+    //         date:req.body.date,
+    //         userId: req.params.userId,
+            
+    //     })
+    //     .then((note)=>{
+    //         if(!note) {
+    //             return res.status(404).json({message:"invaild input"})
+    //         }
+    //         return User.findByIdAndUpdate(
+    //             {
+    //                 _id: req.params.userId
+    //             },
+    //             { 
+    //                 $addToSet: {notes: note._id} 
+    //             },
+    //             { new: true }
+    //         );
+    //     })
+    //     .then((user) => !user
+    //     ? res.status(404).json({
+    //         message: 'Note created, but found no user with that ID',
+    //       })
+    //     : res.json('Created the note 🎉'))
+    //     .catch((err) => {
+    //         console.log(err);
+    //         res.status(500).json(err);
+    //     });
+    // },  
 
     deleteNote(req,res){
         Note.findOneAndDelete({ _id: req.params.noteId })

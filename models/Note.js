@@ -18,7 +18,7 @@ const noteSchema = new Schema(
             default: Date.now,
             get: (timestamp) => dateFormat(timestamp)
         },
-        userid:
+        userId:
         {
             //  type: Schema.Types.ObjectId, ref: 'user',
             type: String,
