@@ -4,7 +4,8 @@ const { events } = require('../models/User');
 
 module.exports = {
     getAllEvents(req, res) {
-        Event.find({})
+        const userId = req.params.userId;
+        Event.find({userId})
         .then((allEvents)=>res.json(allEvents))
         .catch((err) => res.status(500).json(err))
     },
@@ -19,14 +20,19 @@ module.exports = {
             .catch((err) => res.status(500).json(err))
     },
     addEvent(req, res) {
-        Event.create(req.body)
+        Event.create({
+            userId: req.params.userId,
+            title:req.body.title,
+            start:req.body.start,
+            end:req.body.end
+        })
         .then((event)=>{
             if(!event) {
                 return res.status(404).json({message:"invaild input"})
             }
             return User.findByIdAndUpdate(
                 {
-                    _id: req.body.userId
+                    _id: req.params.userId
                 },
                 { 
                     $addToSet: {events: event._id} 
