@@ -5,9 +5,9 @@ const { events } = require('../models/User');
 module.exports = {
     getAllEvents(req, res) {
         const userId = req.params.userId;
-        Event.find({userId})
-        .then((allEvents)=>res.json(allEvents))
-        .catch((err) => res.status(500).json(err))
+        Event.find({ userId })
+            .then((allEvents) => res.json(allEvents))
+            .catch((err) => res.status(500).json(err))
     },
     getOneEvent(req, res) {
         Event.findOne({ _id: req.params.eventId })
@@ -20,35 +20,39 @@ module.exports = {
             .catch((err) => res.status(500).json(err))
     },
     addEvent(req, res) {
+
+        let eventObj = {}
+
         Event.create({
             userId: req.params.userId,
-            title:req.body.title,
-            start:req.body.start,
-            end:req.body.end
+            title: req.body.title,
+            start: req.body.start,
+            end: req.body.end
         })
-        .then((event)=>{
-            if(!event) {
-                return res.status(404).json({message:"invaild input"})
-            }
-            return User.findByIdAndUpdate(
-                {
-                    _id: req.params.userId
-                },
-                { 
-                    $addToSet: {events: event._id} 
-                },
-                { new: true }
-            );
-        })
-        .then((user) => !user
-        ? res.status(404).json({
-            message: 'Event created, but found no user with that ID',
-          })
-        : res.json('Created the event 🎉'))
-        .catch((err) => {
-            console.log(err);
-            res.status(500).json(err);
-        });
+            .then((event) => {
+                if (!event) {
+                    return res.status(404).json({ message: "invaild input" })
+                }
+                eventObj += event
+                return User.findByIdAndUpdate(
+                    {
+                        _id: req.params.userId
+                    },
+                    {
+                        $addToSet: { events: event._id }
+                    },
+                    { new: true }
+                );
+            })
+            .then((user) => !user
+                ? res.status(404).json({
+                    message: 'Event created, but found no user with that ID',
+                })
+                : res.json(eventObj))
+            .catch((err) => {
+                console.log(err);
+                res.status(500).json(err);
+            });
     },
     removeEvent(req, res) {
         Event.findByIdAndDelete({ _id: req.params.eventId })
@@ -57,10 +61,15 @@ module.exports = {
                     return res.status(404).json({ message: "invalid ID" })
                 }
             })
-            .then(() => res.json({message:'event removed'}))
+            .then(() => {
+                const userId = req.params.userId;
+                Event.find({ userId })
+                    .then((allEvents) => res.json(allEvents))
+                    .catch((err) => res.status(500).json(err))
+            })
             .catch((err) => {
-              console.log(err);
-              res.status(500).json(err);
-          })        
+                console.log(err);
+                res.status(500).json(err);
+            })
     },
 }
