@@ -3,7 +3,7 @@ const db = require('./config/connection');
 const routes = require('./routes');
 const cors = require('cors')
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 const app = express();
 
 console.log("PID: ", process.pid)
