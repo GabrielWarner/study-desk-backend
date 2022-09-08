@@ -33,7 +33,8 @@ module.exports = {
                 if (!event) {
                     return res.status(404).json({ message: "invaild input" })
                 }
-                eventObj += event
+                eventObj = event
+                console.log(eventObj)
                 return User.findByIdAndUpdate(
                     {
                         _id: req.params.userId
